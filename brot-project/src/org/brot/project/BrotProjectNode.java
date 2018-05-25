@@ -19,12 +19,10 @@ package org.brot.project;
 
 import java.awt.Image;
 import javax.swing.Action;
-import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
 import org.netbeans.spi.project.ui.support.NodeFactorySupport;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
-import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.Lookups;
 import org.openide.util.lookup.ProxyLookup;
 
@@ -38,7 +36,7 @@ class BrotProjectNode extends FilterNode {
 
     public BrotProjectNode(BrotProject project, Node node) {
         super(node,
-                NodeFactorySupport.createCompositeChildren(project, "Projects/org-brot-project/Nodes"),
+                NodeFactorySupport.createCompositeChildren(project, "Projects/" + BrotProject.PROJECT_ID + "/Nodes"),
                 new ProxyLookup(Lookups.singleton(project), node.getLookup()));
         
         this.project = project;

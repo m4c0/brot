@@ -18,6 +18,7 @@
 package org.brot.project;
 
 import org.netbeans.api.project.Project;
+import org.netbeans.spi.project.support.LookupProviderSupport;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
@@ -27,6 +28,8 @@ import org.openide.util.lookup.Lookups;
  * @author m4c0@users.noreply.github.com
  */
 class BrotProject implements Project {
+
+    public static final String PROJECT_ID = "org-brot-project";
 
     private final FileObject directory;
     private Lookup lkp;
@@ -47,7 +50,7 @@ class BrotProject implements Project {
                     new BrotProjectInfo(this),
                     new BrotLogicalViewProvider(this));
         }
-        return lkp;
+        return LookupProviderSupport.createCompositeLookup(lkp, "Projects/" + PROJECT_ID + "/Lookup");
     }
 
 }
