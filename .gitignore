@@ -1,4 +1,3 @@
+.DS_Store
 private/
-
-/build/
-/brot-project/build/
+build/
