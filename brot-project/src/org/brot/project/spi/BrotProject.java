@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.brot.project;
+package org.brot.project.spi;
 
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.support.LookupProviderSupport;
@@ -27,7 +27,7 @@ import org.openide.util.lookup.Lookups;
  *
  * @author m4c0@users.noreply.github.com
  */
-class BrotProject implements Project {
+public final class BrotProject implements Project {
 
     public static final String PROJECT_ID = "org-brot-project";
 
@@ -46,11 +46,9 @@ class BrotProject implements Project {
     @Override
     public Lookup getLookup() {
         if (lkp == null) {
-            lkp = Lookups.fixed(this,
-                    new BrotProjectInfo(this),
-                    new BrotLogicalViewProvider(this));
+            lkp = LookupProviderSupport.createCompositeLookup(Lookups.fixed(this), "Projects/" + PROJECT_ID + "/Lookup");
         }
-        return LookupProviderSupport.createCompositeLookup(lkp, "Projects/" + PROJECT_ID + "/Lookup");
+        return lkp;
     }
 
 }

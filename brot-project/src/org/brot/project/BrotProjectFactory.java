@@ -17,6 +17,7 @@
  */
 package org.brot.project;
 
+import org.brot.project.spi.BrotProject;
 import java.io.IOException;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ProjectFactory;

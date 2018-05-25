@@ -19,6 +19,10 @@ package org.brot.project;
 
 import java.awt.Image;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
+import org.brot.project.spi.BrotProject;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
 import org.netbeans.spi.project.ui.support.NodeFactorySupport;
 import org.openide.nodes.FilterNode;
@@ -32,9 +36,9 @@ import org.openide.util.lookup.ProxyLookup;
  */
 class BrotProjectNode extends FilterNode {
 
-    private final BrotProject project;
+    private final Project project;
 
-    public BrotProjectNode(BrotProject project, Node node) {
+    public BrotProjectNode(Project project, Node node) {
         super(node,
                 NodeFactorySupport.createCompositeChildren(project, "Projects/" + BrotProject.PROJECT_ID + "/Nodes"),
                 new ProxyLookup(Lookups.singleton(project), node.getLookup()));
@@ -43,7 +47,7 @@ class BrotProjectNode extends FilterNode {
     }
     
     @Override
-    public Action[] getActions(boolean arg0) {
+    public Action[] getActions(boolean context) {
         return new Action[]{
             CommonProjectActions.copyProjectAction(),
             CommonProjectActions.moveProjectAction(),
@@ -54,7 +58,7 @@ class BrotProjectNode extends FilterNode {
 
     @Override
     public Image getIcon(int type) {
-        return project.getLookup().lookup(BrotProjectInfo.class).getAwtImage();
+        return ((ImageIcon) ProjectUtils.getInformation(project).getIcon()).getImage();
     }
 
     @Override
@@ -64,6 +68,6 @@ class BrotProjectNode extends FilterNode {
 
     @Override
     public String getDisplayName() {
-        return project.getLookup().lookup(BrotProjectInfo.class).getDisplayName();
+        return ProjectUtils.getInformation(project).getDisplayName();
     }
 }

@@ -17,6 +17,9 @@
  */
 package org.brot.project;
 
+import org.brot.project.spi.BrotProject;
+import org.netbeans.api.project.Project;
+import org.netbeans.spi.project.ProjectServiceProvider;
 import org.netbeans.spi.project.ui.LogicalViewProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataFolder;
@@ -26,11 +29,12 @@ import org.openide.nodes.Node;
  *
  * @author m4c0@users.noreply.github.com
  */
-class BrotLogicalViewProvider implements LogicalViewProvider {
+@ProjectServiceProvider(service = LogicalViewProvider.class, projectType = BrotProject.PROJECT_ID)
+public class BrotLogicalViewProvider implements LogicalViewProvider {
 
-    private final BrotProject project;
+    private final Project project;
 
-    public BrotLogicalViewProvider(BrotProject project) {
+    public BrotLogicalViewProvider(Project project) {
         this.project = project;
     }
 

@@ -21,21 +21,24 @@ import java.awt.Image;
 import java.beans.PropertyChangeListener;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import org.brot.project.spi.BrotProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
+import org.netbeans.spi.project.ProjectServiceProvider;
 import org.openide.util.ImageUtilities;
 
 /**
  *
  * @author m4c0@users.noreply.github.com
  */
-class BrotProjectInfo implements ProjectInformation {
+@ProjectServiceProvider(service = ProjectInformation.class, projectType = BrotProject.PROJECT_ID)
+public class BrotProjectInfo implements ProjectInformation {
 
     public static final String ICON = "org/brot/project/icon.png";
     
-    private final BrotProject project;
+    private final Project project;
 
-    public BrotProjectInfo(BrotProject project) {
+    public BrotProjectInfo(Project project) {
         this.project = project;
     }
     
