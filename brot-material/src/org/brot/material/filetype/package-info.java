@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-@TemplateRegistration(folder = "Brot", content = "BrotMaterialTemplate.xml")
+@TemplateRegistration(folder = "Brot", content = "BrotMaterialTemplate.xml", displayName = "Material", targetName = "material.xml")
 package org.brot.material.filetype;
 
 import org.netbeans.api.templates.TemplateRegistration;
