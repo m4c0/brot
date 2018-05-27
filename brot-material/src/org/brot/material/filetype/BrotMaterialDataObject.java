@@ -24,11 +24,9 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.MIMEResolver;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectExistsException;
-import org.openide.loaders.FileEntry;
 import org.openide.loaders.MultiDataObject;
 import org.openide.loaders.MultiFileLoader;
 import org.openide.util.Lookup;
@@ -105,40 +103,10 @@ public class BrotMaterialDataObject extends MultiDataObject {
 
     public static final String MIME_TYPE = "text/brot-material+xml";
     public static final String ACTION_PATH = "Loaders/" + MIME_TYPE + "/Actions";
-    
-    // Usually it's better to use the class name as string, to avoid loading it,
-    // but, in this case, the class we want is the one that loaded us.
-    private static final MultiFileLoader FORCED_LOADER = new MultiFileLoader(BrotMaterialDataObject.class.getName()) {
-
-        @Override
-        protected FileObject findPrimaryFile(FileObject fo) {
-            return "xml".equals(fo.getExt()) ? fo : FileUtil.findBrother(fo, "xml");
-        }
-
-        @Override
-        protected MultiDataObject createMultiObject(FileObject primaryFile) throws DataObjectExistsException, IOException {
-            return new BrotMaterialDataObject(primaryFile, this);
-        }
-
-        @Override
-        protected Entry createPrimaryEntry(MultiDataObject obj, FileObject primaryFile) {
-            return new FileEntry(obj, primaryFile);
-        }
-
-        @Override
-        protected Entry createSecondaryEntry(MultiDataObject obj, FileObject secondaryFile) {
-            return new FileEntry(obj, secondaryFile);
-        }
-    };
 
     public BrotMaterialDataObject(FileObject pf, MultiFileLoader loader) throws DataObjectExistsException, IOException {
-        // The annotation processor uses MimeFactory to create instances. That
-        // one uses a canned instance from DataLoaderPool, which does not
-        // support secondary files. If we register the MFL itself, then we don't
-        // get the node for free, so we would need a BrotMaterialNode as well.
-        super(pf, FORCED_LOADER);
+        super(pf, loader);
         registerEditor(MIME_TYPE, true);
-        // registerEntry(FileUtil.findBrother(pf, "..."));
     }
 
     @Override
