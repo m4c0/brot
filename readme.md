@@ -37,6 +37,9 @@ From a guy learning how to use EDA:
   GPLv3, with parts licensed with Apache License
 * **Does it mean my designs must be open-source?**
   No. Think of it like "Libre Office" - if you create a spreadsheet with it, it does not need to be "open".
+* **Can I make money with my designs?**
+  Yes, definitely. If you do so, I only request to "give something back" to the Brot community. It can be a tip,
+  but bug reports, pull requests or "spreading the word" are gladly accepted as well.
 
 * **Why a Desktop app?**
   Designing in a web browser is cool, but it's limited. Key bindings may have funky response, specially in
@@ -54,7 +57,7 @@ From a guy learning how to use EDA:
 
 * **Why XML?**
   XML is a horrible format if a human needs to maintain it, but it's an amazing format for machine processing.
-  Also, NetBeans has a great support for XML, which saves time from developing and maintaining parsers and such.
+  Also, Java has a great support for XML, which saves time from developing and maintaining parsers and such.
 * **Do I need to edit those XMLs?**
   A power-user may find it useful, but the average guy/gal will never need it.
 
