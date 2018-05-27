@@ -40,69 +40,72 @@ import org.openide.windows.TopComponent;
 })
 @MIMEResolver.NamespaceRegistration(
         displayName = "#LBL_BrotMaterial_LOADER",
-        mimeType = "text/brot-material+xml",
+        mimeType = BrotMaterialDataObject.MIME_TYPE,
         elementNS = {"org.brot.material"}
 )
 @DataObject.Registration(
-        mimeType = "text/brot-material+xml",
+        mimeType = BrotMaterialDataObject.MIME_TYPE,
         iconBase = "org/brot/material/filetype/icon.png",
         displayName = "#LBL_BrotMaterial_LOADER",
         position = 300
 )
 @ActionReferences({
     @ActionReference(
-            path = "Loaders/text/brot-material+xml/Actions",
+            path = BrotMaterialDataObject.ACTION_PATH,
             id = @ActionID(category = "System", id = "org.openide.actions.OpenAction"),
             position = 100,
             separatorAfter = 200
     ),
     @ActionReference(
-            path = "Loaders/text/brot-material+xml/Actions",
+            path = BrotMaterialDataObject.ACTION_PATH,
             id = @ActionID(category = "Edit", id = "org.openide.actions.CutAction"),
             position = 300
     ),
     @ActionReference(
-            path = "Loaders/text/brot-material+xml/Actions",
+            path = BrotMaterialDataObject.ACTION_PATH,
             id = @ActionID(category = "Edit", id = "org.openide.actions.CopyAction"),
             position = 400,
             separatorAfter = 500
     ),
     @ActionReference(
-            path = "Loaders/text/brot-material+xml/Actions",
+            path = BrotMaterialDataObject.ACTION_PATH,
             id = @ActionID(category = "Edit", id = "org.openide.actions.DeleteAction"),
             position = 600
     ),
     @ActionReference(
-            path = "Loaders/text/brot-material+xml/Actions",
+            path = BrotMaterialDataObject.ACTION_PATH,
             id = @ActionID(category = "System", id = "org.openide.actions.RenameAction"),
             position = 700,
             separatorAfter = 800
     ),
     @ActionReference(
-            path = "Loaders/text/brot-material+xml/Actions",
+            path = BrotMaterialDataObject.ACTION_PATH,
             id = @ActionID(category = "System", id = "org.openide.actions.SaveAsTemplateAction"),
             position = 900,
             separatorAfter = 1000
     ),
     @ActionReference(
-            path = "Loaders/text/brot-material+xml/Actions",
+            path = BrotMaterialDataObject.ACTION_PATH,
             id = @ActionID(category = "System", id = "org.openide.actions.FileSystemAction"),
             position = 1100,
             separatorAfter = 1200
     ),
     @ActionReference(
-            path = "Loaders/text/brot-material+xml/Actions",
+            path = BrotMaterialDataObject.ACTION_PATH,
             id = @ActionID(category = "System", id = "org.openide.actions.ToolsAction"),
             position = 1300
     ),
     @ActionReference(
-            path = "Loaders/text/brot-material+xml/Actions",
+            path = BrotMaterialDataObject.ACTION_PATH,
             id = @ActionID(category = "System", id = "org.openide.actions.PropertiesAction"),
             position = 1400
     )
 })
 public class BrotMaterialDataObject extends MultiDataObject {
 
+    public static final String MIME_TYPE = "text/brot-material+xml";
+    public static final String ACTION_PATH = "Loaders/" + MIME_TYPE + "/Actions";
+    
     private static final MultiFileLoader FORCED_LOADER = new MultiFileLoader(BrotMaterialDataObject.class) {
 
         @Override
@@ -132,7 +135,7 @@ public class BrotMaterialDataObject extends MultiDataObject {
         // support secondary files. If we register the MFL itself, then we don't
         // get the node for free, so we would need a BrotMaterialNode as well.
         super(pf, FORCED_LOADER);
-        registerEditor("text/brot-material+xml", true);
+        registerEditor(MIME_TYPE, true);
         // registerEntry(FileUtil.findBrother(pf, "..."));
     }
 
@@ -144,7 +147,7 @@ public class BrotMaterialDataObject extends MultiDataObject {
     @MultiViewElement.Registration(
             displayName = "#LBL_BrotMaterial_EDITOR",
             iconBase = "org/brot/material/filetype/icon.png",
-            mimeType = "text/brot-material+xml",
+            mimeType = MIME_TYPE,
             persistenceType = TopComponent.PERSISTENCE_ONLY_OPENED,
             preferredID = "BrotMaterial",
             position = 1000
