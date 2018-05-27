@@ -106,7 +106,9 @@ public class BrotMaterialDataObject extends MultiDataObject {
     public static final String MIME_TYPE = "text/brot-material+xml";
     public static final String ACTION_PATH = "Loaders/" + MIME_TYPE + "/Actions";
     
-    private static final MultiFileLoader FORCED_LOADER = new MultiFileLoader(BrotMaterialDataObject.class) {
+    // Usually it's better to use the class name as string, to avoid loading it,
+    // but, in this case, the class we want is the one that loaded us.
+    private static final MultiFileLoader FORCED_LOADER = new MultiFileLoader(BrotMaterialDataObject.class.getName()) {
 
         @Override
         protected FileObject findPrimaryFile(FileObject fo) {
