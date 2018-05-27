@@ -25,6 +25,7 @@ import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.NodeFactory;
 import org.netbeans.spi.project.ui.support.NodeFactorySupport;
 import org.netbeans.spi.project.ui.support.NodeList;
+import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.FilterNode;
@@ -95,7 +96,8 @@ public class BrotMaterialNode implements NodeFactory {
 
         @Override
         protected Node[] createNodes(Node key) {
-            if (key.getLookup().lookup(BrotMaterialDataObject.class) == null) {
+            String mimeType = key.getLookup().lookup(FileObject.class).getMIMEType();
+            if (!BrotMaterialDataObject.MIME_TYPE.equals(mimeType)) {
                 return new Node[0];
             }
             return new Node[] { key.cloneNode() };
