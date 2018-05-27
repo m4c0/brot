@@ -150,7 +150,7 @@ public class BrotMaterialDataObject extends MultiDataObject {
             mimeType = MIME_TYPE,
             persistenceType = TopComponent.PERSISTENCE_ONLY_OPENED,
             preferredID = "BrotMaterial",
-            position = 1000
+            position = 100000
     )
     @Messages("LBL_BrotMaterial_EDITOR=Source")
     public static MultiViewEditorElement createEditor(Lookup lkp) {

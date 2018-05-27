@@ -35,7 +35,7 @@ import org.openide.windows.TopComponent;
         mimeType = "text/brot-material+xml",
         persistenceType = TopComponent.PERSISTENCE_NEVER,
         preferredID = "BrotMaterialVisual",
-        position = 2000
+        position = 1000
 )
 @Messages("LBL_BrotMaterial_VISUAL=Visual")
 public final class BrotMaterialVisualElement extends JPanel implements MultiViewElement {
@@ -116,6 +116,10 @@ public final class BrotMaterialVisualElement extends JPanel implements MultiView
 
     @Override
     public void componentShowing() {
+        if (callback != null) {
+            TopComponent tc = callback.getTopComponent();
+            tc.setName(obj.getPrimaryEntry().getFile().getNameExt());
+        }
     }
 
     @Override
@@ -144,5 +148,5 @@ public final class BrotMaterialVisualElement extends JPanel implements MultiView
     public CloseOperationState canCloseElement() {
         return CloseOperationState.STATE_OK;
     }
-
+    
 }
