@@ -18,6 +18,8 @@
 package org.brot.material.filetype;
 
 import java.io.IOException;
+import org.brot.material.api.BrotMaterial;
+import org.brot.material.parser.BrotMaterialParser;
 import org.netbeans.core.spi.multiview.MultiViewElement;
 import org.netbeans.core.spi.multiview.text.MultiViewEditorElement;
 import org.openide.awt.ActionID;
@@ -107,6 +109,8 @@ public class BrotMaterialDataObject extends MultiDataObject {
     public BrotMaterialDataObject(FileObject pf, MultiFileLoader loader) throws DataObjectExistsException, IOException {
         super(pf, loader);
         registerEditor(MIME_TYPE, true);
+
+        getCookieSet().add(BrotMaterial.class, new BrotMaterialParser(pf));
     }
 
     @Override
