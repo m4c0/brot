@@ -39,12 +39,10 @@ public abstract class DOMDataObject extends MultiDataObject {
         getCookieSet().assign(DOMProvider.class, new DOMProvider(pf));
     }
 
-    protected abstract String getMimeType();
-
     @Override
     public Lookup getLookup() {
         if (lkp == null) {
-            lkp = new LookupMerger(super.getLookup(), "Loaders/" + getMimeType() + "/Lookups");
+            lkp = new LookupMerger(super.getLookup(), "Loaders/" + getPrimaryFile().getMIMEType() + "/Lookups");
         }
         return lkp;
     }
