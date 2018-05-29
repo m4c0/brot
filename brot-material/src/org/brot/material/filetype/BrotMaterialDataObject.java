@@ -18,7 +18,7 @@
 package org.brot.material.filetype;
 
 import java.io.IOException;
-import org.brot.xml.api.DOMProvider;
+import org.brot.xml.api.DOMDataObject;
 import org.netbeans.core.spi.multiview.MultiViewElement;
 import org.netbeans.core.spi.multiview.text.MultiViewEditorElement;
 import org.openide.awt.ActionID;
@@ -28,7 +28,6 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.MIMEResolver;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectExistsException;
-import org.openide.loaders.MultiDataObject;
 import org.openide.loaders.MultiFileLoader;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
@@ -100,7 +99,7 @@ import org.openide.windows.TopComponent;
             position = 1400
     )
 })
-public class BrotMaterialDataObject extends MultiDataObject {
+public class BrotMaterialDataObject extends DOMDataObject {
 
     public static final String MIME_TYPE = "text/brot-material+xml";
     public static final String ACTION_PATH = "Loaders/" + MIME_TYPE + "/Actions";
@@ -108,8 +107,6 @@ public class BrotMaterialDataObject extends MultiDataObject {
     public BrotMaterialDataObject(FileObject pf, MultiFileLoader loader) throws DataObjectExistsException, IOException {
         super(pf, loader);
         registerEditor(MIME_TYPE, true);
-
-        getCookieSet().assign(DOMProvider.class, new DOMProvider(pf));
     }
 
     @Override
