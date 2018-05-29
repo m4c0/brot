@@ -21,7 +21,7 @@ import java.awt.Image;
 import java.beans.PropertyChangeListener;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import org.brot.project.spi.BrotProject;
+import org.brot.project.api.BrotProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.spi.project.ProjectServiceProvider;

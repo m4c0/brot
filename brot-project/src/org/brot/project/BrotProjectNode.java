@@ -20,7 +20,7 @@ package org.brot.project;
 import java.awt.Image;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
-import org.brot.project.spi.BrotProject;
+import org.brot.project.api.BrotProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;

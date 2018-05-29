@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.brot.project.spi;
+package org.brot.project.api;
 
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.support.LookupProviderSupport;

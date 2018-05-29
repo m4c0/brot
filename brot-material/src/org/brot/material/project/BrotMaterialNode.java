@@ -20,7 +20,7 @@ package org.brot.material.project;
 import java.awt.Image;
 import javax.swing.Action;
 import org.brot.material.filetype.BrotMaterialDataObject;
-import org.brot.project.spi.BrotProject;
+import org.brot.project.api.BrotProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.NodeFactory;
 import org.netbeans.spi.project.ui.support.NodeFactorySupport;

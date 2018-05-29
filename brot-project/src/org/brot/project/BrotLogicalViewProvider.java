@@ -17,7 +17,7 @@
  */
 package org.brot.project;
 
-import org.brot.project.spi.BrotProject;
+import org.brot.project.api.BrotProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ProjectServiceProvider;
 import org.netbeans.spi.project.ui.LogicalViewProvider;
