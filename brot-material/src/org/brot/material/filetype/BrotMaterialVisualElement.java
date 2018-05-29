@@ -21,6 +21,7 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import org.brot.material.scene.MaterialScene;
 import org.netbeans.core.spi.multiview.CloseOperationState;
 import org.netbeans.core.spi.multiview.MultiViewElement;
 import org.netbeans.core.spi.multiview.MultiViewElementCallback;
@@ -44,10 +45,17 @@ public final class BrotMaterialVisualElement extends JPanel implements MultiView
     private final JToolBar toolbar = new JToolBar();
     private transient MultiViewElementCallback callback;
 
+    private final MaterialScene scene;
+
     public BrotMaterialVisualElement(Lookup lkp) {
         obj = lkp.lookup(BrotMaterialDataObject.class);
         assert obj != null;
         initComponents();
+
+        scene = new MaterialScene(obj.getLookup());
+        sceneScrollPane.setViewportView(scene.createView());
+
+        // TODO: Add support for navigation
     }
 
     @Override
@@ -148,5 +156,5 @@ public final class BrotMaterialVisualElement extends JPanel implements MultiView
     public CloseOperationState canCloseElement() {
         return CloseOperationState.STATE_OK;
     }
-    
+
 }
