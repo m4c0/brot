@@ -33,6 +33,7 @@ public class DOMProvider {
     private Element rootElement;
 
     public DOMProvider(FileObject file) {
+        // TODO: Listen for changes
         this.file = file;
     }
 
