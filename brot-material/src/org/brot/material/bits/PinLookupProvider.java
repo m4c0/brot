@@ -17,6 +17,10 @@
  */
 package org.brot.material.bits;
 
+import java.awt.BasicStroke;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.List;
 import org.brot.material.filetype.BrotMaterialDataObject;
@@ -24,7 +28,7 @@ import org.brot.material.spi.BrotMaterialSceneNode;
 import org.brot.xml.api.DOMProvider;
 import org.brot.xml.spi.DOMLookupProvider;
 import org.netbeans.api.visual.action.ActionFactory;
-import org.netbeans.api.visual.widget.LabelWidget;
+import org.netbeans.api.visual.action.MoveStrategy;
 import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
 import org.openide.util.Exceptions;
@@ -94,11 +98,39 @@ public class PinLookupProvider implements DOMLookupProvider {
 
         @Override
         public Widget createWidget(Scene s) {
-            LabelWidget w = new LabelWidget(s, id);
-            w.getActions().addAction(ActionFactory.createMoveAction());
+            Widget w = new PinWidget(s);
+            w.getActions().addAction(ActionFactory.createMoveAction(new MoveStrategy() {
+                @Override
+                public Point locationSuggested(Widget widget, Point originalLocation, Point suggestedLocation) {
+                    Point res = new Point();
+                    res.x = suggestedLocation.x - suggestedLocation.x % 5;
+                    res.y = suggestedLocation.y - suggestedLocation.y % 5;
+                    return res;
+                }
+            }, null));
             return w;
         }
 
+    }
+
+    private static class PinWidget extends Widget {
+
+        public PinWidget(Scene scene) {
+            super(scene);
+        }
+
+        @Override
+        protected Rectangle calculateClientArea() {
+            return new Rectangle(0, 0, 10, 10);
+        }
+
+        @Override
+        protected void paintWidget() {
+            Graphics2D g = getGraphics();
+            g.setColor(getForeground());
+            g.setStroke(new BasicStroke(2));
+            g.drawOval(0, 0, 5, 5);
+        }
     }
 
 }
