@@ -30,6 +30,7 @@ public class MaterialScene<Edge> extends GraphScene<BrotMaterialSceneNode, Edge>
     private final LayerWidget mainLayer = new LayerWidget(this);
 
     public MaterialScene(Lookup dataObjLookup) {
+        // TODO: listen to changes
         nodeLookupResult = dataObjLookup.lookupResult(BrotMaterialSceneNode.class);
         for (BrotMaterialSceneNode node : nodeLookupResult.allInstances()) {
             addNode(node);
