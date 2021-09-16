@@ -112,6 +112,9 @@ From a guy learning how to use EDA:
   more accurate to do `3mm + 100um` as `(3 * 10^3 + 100)um` than `3 + 0.1` and
   less prone to overflows than `3_000_000 + 100_000`.
 
+* **Do I need to learn a programming language?**
+  No.
+
 * **Do I need to learn something else?**
   It might be useful to learn about some automation tools, like Make or shell
   scripting. But, if you can also use only Brot and do it all by yourself.
