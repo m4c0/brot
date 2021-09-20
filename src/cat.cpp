@@ -14,10 +14,7 @@ public:
 };
 class stmt {
 public:
-  explicit stmt(brot::parser::input_t token) noexcept {};
-  stmt operator+(const dummy_list<dummy> & /*o*/) const noexcept {
-    return *this;
-  }
+  explicit stmt(brot::parser::input_t name, brot::parser::input_t params) noexcept {};
 };
 
 class spec {
@@ -46,9 +43,6 @@ struct config {
   using id = ::dummy;
 
   using file = ::file;
-
-  using param = ::dummy;
-  using param_list = ::dummy_list<param>;
 
   using statement = ::stmt;
   using statement_list = ::dummy_list<statement>;

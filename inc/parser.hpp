@@ -11,7 +11,7 @@ namespace brot::parser {
   using input_t = m4c0::parser::input_t;
 
   template<typename Tp>
-  concept accepts_token = std::is_constructible_v<Tp, m4c0::parser::input_t>;
+  concept accepts_token = std::is_constructible_v<Tp, input_t>;
 
   template<typename A, typename B>
   concept is_composable_with = std::is_invocable_v<std::plus<>, A, B>;
@@ -19,8 +19,8 @@ namespace brot::parser {
   template<typename Tp, typename InnerTp>
   concept is_list_of = std::is_constructible_v<Tp> && is_composable_with<const Tp, const InnerTp>;
 
-  template<typename Tp, typename ParamTp>
-  concept is_statement = accepts_token<Tp> && is_composable_with<const Tp, ParamTp>;
+  template<typename Tp>
+  concept is_statement = std::is_constructible_v<Tp, input_t, input_t>;
 
   // Just wait until Apple's clang support `concept a = requires` or until clang-format do a better job formatting these
 
@@ -30,9 +30,7 @@ namespace brot::parser {
   template<typename Tp>
   concept valid_config =                                                    //
       accepts_token<typename Tp::id> &&                                     //
-      accepts_token<typename Tp::param> &&                                  //
-      is_list_of<typename Tp::param_list, typename Tp::param> &&            //
-      is_statement<typename Tp::statement, typename Tp::param_list> &&      //
+      is_statement<typename Tp::statement> &&                               //
       is_list_of<typename Tp::statement_list, typename Tp::statement> &&    //
       is_composable_with<typename Tp::spec, typename Tp::statement_list> && //
       is_list_of<typename Tp::spec, typename Tp::id> &&                     //
@@ -48,6 +46,7 @@ namespace brot::parser {
     static constexpr const auto lparen = skip(match('('));
     static constexpr const auto rparen = skip(match(')'));
     static constexpr const auto colon = skip(match(':'));
+    static constexpr const auto param_chars = many(skip(match_none_of("\r\n():")));
     static constexpr const auto token_chars = at_least_one(skip(match_none_of(" \t\r\n():")));
 
     template<typename Tp>
@@ -58,8 +57,12 @@ namespace brot::parser {
     template<typename LTp, typename TTp>
     static constexpr const auto list = spaces + many(token<TTp>, LTp {}) + spaces;
 
-    template<typename LTp, typename TTp>
-    static constexpr const auto params = lparen + list<LTp, TTp> + rparen + spaces;
+    static constexpr const auto params = lparen & tokenise(param_chars) + rparen + spaces;
+
+    template<typename Tp>
+    static constexpr const auto statement = spaces & combine(tokenise(token_chars), params, [](auto name, auto param) {
+      return Tp { name, param };
+    });
 
     template<typename FTp, typename Printer>
     struct print {
@@ -85,8 +88,6 @@ namespace brot::parser {
   static auto parse(std::istream & in) noexcept {
     using file_t = typename Config::file;
     using id_t = typename Config::id;
-    using param_t = typename Config::param;
-    using param_list_t = typename Config::param_list;
     using print_t = typename Config::print;
     using spec_t = typename Config::spec;
     using stmt_t = typename Config::statement;
@@ -94,7 +95,7 @@ namespace brot::parser {
 
     static constexpr const auto ids = impl::list<spec_t, id_t>;
 
-    static constexpr const auto statement = impl::token<stmt_t> + impl::params<param_list_t, param_t>;
+    static constexpr const auto statement = impl::statement<stmt_t>;
     static constexpr const auto statement_list = at_least_one(statement, stmt_list_t {});
 
     static constexpr const auto spec = ids + impl::colon + impl::spaces + statement_list + impl::spaces;
