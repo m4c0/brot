@@ -10,9 +10,6 @@
 namespace brot::parser {
   using input_t = m4c0::parser::input_t;
 
-  template<typename Tp>
-  concept accepts_token = std::is_constructible_v<Tp, input_t>;
-
   template<typename A, typename B>
   concept is_composable_with = std::is_invocable_v<std::plus<>, A, B>;
 
@@ -22,20 +19,21 @@ namespace brot::parser {
   template<typename Tp>
   concept is_statement = std::is_constructible_v<Tp, input_t, input_t>;
 
+  template<typename Tp, typename SLTp>
+  concept is_spec = std::is_constructible_v<Tp, input_t, SLTp>;
+
   // Just wait until Apple's clang support `concept a = requires` or until clang-format do a better job formatting these
 
   template<typename PTp, typename FTp>
   concept can_print = std::is_invocable_r_v<bool, PTp, FTp>;
 
   template<typename Tp>
-  concept valid_config =                                                    //
-      accepts_token<typename Tp::id> &&                                     //
-      is_statement<typename Tp::statement> &&                               //
-      is_list_of<typename Tp::statement_list, typename Tp::statement> &&    //
-      is_composable_with<typename Tp::spec, typename Tp::statement_list> && //
-      is_list_of<typename Tp::spec, typename Tp::id> &&                     //
-      is_list_of<typename Tp::file, typename Tp::spec> &&                   //
-      can_print<typename Tp::print, typename Tp::file> &&                   //
+  concept valid_config =                                                 //
+      is_statement<typename Tp::statement> &&                            //
+      is_list_of<typename Tp::statement_list, typename Tp::statement> && //
+      is_spec<typename Tp::spec, typename Tp::statement_list> &&         //
+      is_list_of<typename Tp::file, typename Tp::spec> &&                //
+      can_print<typename Tp::print, typename Tp::file> &&                //
       true;
 
   namespace impl {
@@ -49,19 +47,22 @@ namespace brot::parser {
     static constexpr const auto param_chars = many(skip(match_none_of("\r\n():")));
     static constexpr const auto token_chars = at_least_one(skip(match_none_of(" \t\r\n():")));
 
-    template<typename Tp>
-    static constexpr const auto token = spaces & tokenise(token_chars) & [](input_t v) {
-      return Tp { v };
-    };
-
-    template<typename LTp, typename TTp>
-    static constexpr const auto list = spaces + many(token<TTp>, LTp {}) + spaces;
+    static constexpr const auto token = tokenise(token_chars);
 
     static constexpr const auto params = lparen & tokenise(param_chars) + rparen + spaces;
 
     template<typename Tp>
-    static constexpr const auto statement = spaces & combine(tokenise(token_chars), params, [](auto name, auto param) {
+    static constexpr const auto statement = spaces & combine(token, params, [](auto name, auto param) {
       return Tp { name, param };
+    });
+    template<typename LTp, typename STp>
+    static constexpr const auto statement_list = spaces & at_least_one(statement<STp>, LTp {}) + spaces;
+
+    static constexpr const auto spec_preamble = token + colon;
+
+    template<typename SpecTp, typename LTp, typename STp>
+    static constexpr const auto spec = combine(spec_preamble, statement_list<LTp, STp>, [](auto name, auto stmts) {
+      return SpecTp { name, stmts };
     });
 
     template<typename FTp, typename Printer>
@@ -87,18 +88,12 @@ namespace brot::parser {
   requires valid_config<Config>
   static auto parse(std::istream & in) noexcept {
     using file_t = typename Config::file;
-    using id_t = typename Config::id;
     using print_t = typename Config::print;
     using spec_t = typename Config::spec;
     using stmt_t = typename Config::statement;
     using stmt_list_t = typename Config::statement_list;
 
-    static constexpr const auto ids = impl::list<spec_t, id_t>;
-
-    static constexpr const auto statement = impl::statement<stmt_t>;
-    static constexpr const auto statement_list = at_least_one(statement, stmt_list_t {});
-
-    static constexpr const auto spec = ids + impl::colon + impl::spaces + statement_list + impl::spaces;
+    static constexpr const auto spec = impl::spec<spec_t, stmt_list_t, stmt_t>;
 
     static constexpr const auto file = many(spec, file_t {}) + m4c0::parser::eof() | "Invalid statement";
 

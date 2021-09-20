@@ -1,10 +1,5 @@
 #include "parser.hpp"
 
-class dummy {
-public:
-  explicit dummy(brot::parser::input_t token) noexcept {
-  }
-};
 template<typename Of>
 class dummy_list {
 public:
@@ -14,16 +9,12 @@ public:
 };
 class stmt {
 public:
-  explicit stmt(brot::parser::input_t name, brot::parser::input_t params) noexcept {};
+  stmt(brot::parser::input_t name, brot::parser::input_t params) noexcept {};
 };
 
 class spec {
 public:
-  spec operator+(const dummy & /*o*/) const noexcept {
-    return *this;
-  }
-  spec operator+(const dummy_list<stmt> & /*o*/) const noexcept {
-    return *this;
+  spec(brot::parser::input_t token, const dummy_list<stmt> & stmts) noexcept {
   }
 };
 class file {
@@ -40,8 +31,6 @@ struct print {
 };
 
 struct config {
-  using id = ::dummy;
-
   using file = ::file;
 
   using statement = ::stmt;
