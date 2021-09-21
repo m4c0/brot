@@ -1,0 +1,5 @@
+C1P: net(R1.1 C1.p Q1.c HDR.2)
+C1N: net(R2.1 C1.n Q2.b)
+C2P: net(R3.1 C2.p Q2.c HDR.3)
+C2N: net(R4.1 C2.n Q1.b)
+

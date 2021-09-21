@@ -1,0 +1,24 @@
+R1: include(r1k)
+R2: include(R1)
+R3: include(r100k)
+R4: include(R3)
+
+C1: include(tcap)
+C2: include(C2)
+
+Q1: include(npn)
+Q2: include(Q2)
+
+HDR:
+  comment(vcc, ground, q, not q - is there a better way to do this?)
+  header(4)
+  spacing(100mil)
+
+VCC:
+  net(R1.0 R2.0 R3.0 R4.0 HDR.0)
+  copper_area(top)
+
+GND:
+  net(Q1.e Q2.e HDR.1)
+  copper_area(bottom)
+

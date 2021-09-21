@@ -1,0 +1,21 @@
+r1k:
+  resistor(1k)
+  footprint(R0603)
+  jlcpcb(C21190)
+
+r100k:
+  resistor(100k)
+  footprint(R0603)
+  jlcpcb(C5803)
+
+c100u:
+  footprint(CAP-SMD_L3.5-W2.8)
+  jlcpcb(C16133)
+  capacitor(tantalum 100u)
+
+npn:
+  transistor(npn)
+  comment(should we add some form of spec?)
+  footprint(SOT-23-3)
+  jlcpcb(C6749)
+
