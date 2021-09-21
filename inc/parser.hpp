@@ -3,38 +3,17 @@
 #include "m4c0/parser/combiners.hpp"
 #include "m4c0/parser/str.hpp"
 
+#include <concepts>
 #include <cstdlib>
 #include <iostream>
 #include <type_traits>
 
+static std::ostream & operator<<(std::ostream & o, m4c0::parser::input_t val) {
+  return o << std::string(val.begin(), val.end());
+}
+
 namespace brot::parser {
   using input_t = m4c0::parser::input_t;
-
-  template<typename A, typename B>
-  concept is_composable_with = std::is_invocable_v<std::plus<>, A, B>;
-
-  template<typename Tp, typename InnerTp>
-  concept is_list_of = std::is_constructible_v<Tp> && is_composable_with<const Tp, const InnerTp>;
-
-  template<typename Tp>
-  concept is_statement = std::is_constructible_v<Tp, input_t, input_t>;
-
-  template<typename Tp, typename SLTp>
-  concept is_spec = std::is_constructible_v<Tp, input_t, SLTp>;
-
-  // Just wait until Apple's clang support `concept a = requires` or until clang-format do a better job formatting these
-
-  template<typename PTp, typename FTp>
-  concept can_print = std::is_invocable_r_v<bool, PTp, FTp>;
-
-  template<typename Tp>
-  concept valid_config =                                                 //
-      is_statement<typename Tp::statement> &&                            //
-      is_list_of<typename Tp::statement_list, typename Tp::statement> && //
-      is_spec<typename Tp::spec, typename Tp::statement_list> &&         //
-      is_list_of<typename Tp::file, typename Tp::spec> &&                //
-      can_print<typename Tp::print, typename Tp::file> &&                //
-      true;
 
   namespace impl {
     using namespace m4c0::parser;
@@ -51,53 +30,45 @@ namespace brot::parser {
 
     static constexpr const auto params = lparen & tokenise(param_chars) + rparen + spaces;
 
-    template<typename Tp>
-    static constexpr const auto statement = spaces & combine(token, params, [](auto name, auto param) {
-      return Tp { name, param };
+    static constexpr auto name = token + colon;
+  }
+
+  template<typename P>
+  concept valid_processor = requires(P p, input_t str) {
+    P();
+    { p.begin_spec(str) } -> std::same_as<void>;
+    { p.add_parameter(str, str) } -> std::same_as<void>;
+    { p.finish() } -> std::same_as<bool>;
+  };
+
+  template<typename P>
+  requires valid_processor<P>
+  static auto parse(std::istream & in) noexcept {
+    P p {};
+
+    const auto name = impl::name & [p = &p](input_t name) {
+      p->begin_spec(name);
+      return m4c0::parser::nil {};
+    };
+    const auto param = combine(impl::token, impl::params, [p = &p](input_t name, input_t value) {
+      p->add_parameter(name, value);
+      return m4c0::parser::nil {};
     });
-    template<typename LTp, typename STp>
-    static constexpr const auto statement_list = spaces & at_least_one(statement<STp>, LTp {}) + spaces;
+    const auto component = skip(name & impl::spaces & at_least_one(param));
+    const auto file = impl::spaces & many(component) & m4c0::parser::eof() | "Invalid statement";
 
-    static constexpr const auto spec_preamble = token + colon;
-
-    template<typename SpecTp, typename LTp, typename STp>
-    static constexpr const auto spec = combine(spec_preamble, statement_list<LTp, STp>, [](auto name, auto stmts) {
-      return SpecTp { name, stmts };
-    });
-
-    template<typename FTp, typename Printer>
-    struct print {
-      int operator()(FTp f, brot::parser::input_t /*rem*/) {
-        return Printer {}(f) ? EXIT_SUCCESS : EXIT_FAILURE;
-      }
-      int operator()(brot::parser::input_t n, brot::parser::input_t rem) {
+    std::string str { std::istreambuf_iterator<char> { in }, {} };
+    return file({ str.data(), str.length() }) % [p = &p](auto n, input_t rem) {
+      if constexpr (!std::is_same_v<std::decay_t<decltype(n)>, brot::parser::input_t>) {
+        return p->finish() ? EXIT_SUCCESS : EXIT_FAILURE;
+      } else {
         using namespace m4c0::parser;
         constexpr const auto line_parser = tokenise(many(skip(match_none_of("\n"))));
         line_parser(rem) % [n](auto line) {
-          const auto err = std::string(n.begin(), n.end());
-          const auto ctx = std::string(line.begin(), line.end());
-          std::cerr << err << " around this:\n    " << ctx << "\n";
+          std::cerr << n << " around this:\n    " << line << "\n";
         };
-
         return EXIT_FAILURE;
       }
     };
-  }
-
-  template<typename Config>
-  requires valid_config<Config>
-  static auto parse(std::istream & in) noexcept {
-    using file_t = typename Config::file;
-    using print_t = typename Config::print;
-    using spec_t = typename Config::spec;
-    using stmt_t = typename Config::statement;
-    using stmt_list_t = typename Config::statement_list;
-
-    static constexpr const auto spec = impl::spec<spec_t, stmt_list_t, stmt_t>;
-
-    static constexpr const auto file = many(spec, file_t {}) + m4c0::parser::eof() | "Invalid statement";
-
-    std::string str { std::istreambuf_iterator<char> { in }, {} };
-    return file({ str.data(), str.length() }) % impl::print<file_t, print_t> {};
   }
 }
