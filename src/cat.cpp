@@ -1,17 +1,20 @@
 #include "parser.hpp"
+#include "printer.hpp"
+
+using namespace brot::parser;
 
 struct cat {
-  void begin_spec(auto name) {
-    std::cout << "\n" << name << ":\n";
+  static constexpr auto begin_spec() -> nil (*)(tokens::spec) {
+    return brot::printer::begin_spec;
   }
-  void add_parameter(auto name, auto value) {
-    std::cout << "  " << name << "(" << value << ")\n";
+  static constexpr auto add_parameter() -> nil (*)(tokens::param_name, tokens::param_value) {
+    return brot::printer::add_parameter;
   }
-  static bool finish() {
+  static constexpr bool finish() {
     return true;
   }
 };
 
 int main() {
-  return brot::parser::parse<cat>(std::cin);
+  return parse<cat>(std::cin);
 }
