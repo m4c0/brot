@@ -1,50 +1,31 @@
-#include "parser.hpp"
-#include "printer.hpp"
+#include "brot/iostream.hpp"
+#include "brot/parser.hpp"
 
+#include <string_view>
 #include <unordered_map>
 
-class expand {
-  using props = std::unordered_map<std::string, std::string>;
+namespace brot::tools::expand {
+  using namespace brot::parser;
 
-  std::unordered_map<std::string, props> m_specs {};
-  props * m_current {};
-  bool m_valid { true };
+  static constexpr const auto cname = compo_name(name);
 
-  static auto to_string(auto in) {
-    return std::string { in.value.begin(), in.value.end() };
-  }
+  static constexpr const auto include_name = m4c0::parser::match("include");
+  static constexpr const auto include_param = parameter(skip(include_name), skip(value));
 
-public:
-  [[nodiscard]] constexpr auto begin_spec() {
-    return [this](brot::parser::tokens::spec name) {
-      m_current = &m_specs[to_string(name)];
-      return brot::printer::begin_spec(name);
-    };
-  }
-  [[nodiscard]] constexpr auto add_parameter() {
-    return [this](auto name, auto value) {
-      const auto n = to_string(name);
-      const auto v = to_string(value);
+  static constexpr const auto other_param = parameter(skip(name), skip(value));
 
-      if (n != "include") {
-        m_current->emplace(n, v);
-        return brot::printer::add_parameter(name, value);
-      }
-      if (!m_specs.contains(v)) {
-        std::cout << "ERR ERR ERR ERR ERR ERR\n";
-      }
-      for (auto & kv : m_specs[v]) {
-        m_current->emplace(kv.first, kv.second);
-        brot::printer::add_parameter(kv.first, kv.second);
-      }
-      return brot::parser::nil {};
-    };
+  static constexpr const auto param = skip(include_param) | skip(other_param);
+
+  static constexpr const auto compo = component(cname, skip(param));
+  static constexpr const auto parser = tokenise<void>(file(skip(compo))) & iostream::print();
+
+  static auto run() {
+    std::unordered_map<std::string_view, std::string_view> specs {};
+
+    return iostream::parse_cin(parser);
   }
-  [[nodiscard]] bool finish() const {
-    return m_valid;
-  }
-};
+}
 
 int main() {
-  return brot::parser::parse<expand>(std::cin);
+  return brot::tools::expand::run();
 }

@@ -1,20 +1,20 @@
-#include "parser.hpp"
-#include "printer.hpp"
+#include "brot/iostream.hpp"
+#include "brot/parser.hpp"
 
-using namespace brot::parser;
+namespace brot::tools::cat {
+  using namespace brot::parser;
 
-struct cat {
-  static constexpr auto begin_spec() -> nil (*)(tokens::spec) {
-    return brot::printer::begin_spec;
+  static constexpr const auto cname = compo_name(name);
+  static constexpr const auto param = parameter(skip(name), skip(value));
+
+  static constexpr const auto compo = component(skip(cname), skip(param));
+  static constexpr const auto parser = tokenise<void>(file(compo)) & iostream::print();
+
+  static auto run() {
+    return iostream::parse_cin(parser);
   }
-  static constexpr auto add_parameter() -> nil (*)(tokens::param_name, tokens::param_value) {
-    return brot::printer::add_parameter;
-  }
-  static constexpr bool finish() {
-    return true;
-  }
-};
+}
 
 int main() {
-  return parse<cat>(std::cin);
+  return brot::tools::cat::run();
 }
