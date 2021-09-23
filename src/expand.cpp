@@ -16,8 +16,9 @@ namespace brot::tools::expand {
 
   static constexpr const auto param = skip(include_param) | skip(other_param);
 
+  static constexpr const auto init = constant(m4c0::parser::nil {});
   static constexpr const auto compo = component(cname, skip(param));
-  static constexpr const auto parser = tokenise<void>(file(skip(compo))) & iostream::print();
+  static constexpr const auto parser = tokenise<void>(file(init, skip(compo))) & iostream::print();
 
   static auto run() {
     std::unordered_map<std::string_view, std::string_view> specs {};
