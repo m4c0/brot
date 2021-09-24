@@ -14,3 +14,7 @@ target_link_libraries(brot-cat PUBLIC brot-parser)
 
 add_executable(brot-expand src/expand.cpp)
 target_link_libraries(brot-expand PUBLIC brot-parser)
+
+add_executable(brot-jlcpcb-bom src/jlcpcb-bom.cpp)
+target_link_libraries(brot-jlcpcb-bom PUBLIC brot-parser)
+

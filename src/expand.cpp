@@ -1,16 +1,12 @@
 #include "brot/iostream.hpp"
 #include "brot/parser.hpp"
+#include "brot/utils.hpp"
 
 #include <string_view>
 #include <unordered_map>
 
 namespace brot::tools::expand {
   using namespace brot::parser;
-
-  template<typename T>
-  static constexpr auto to_sv(m4c0::parser::token<T> t) noexcept {
-    return std::string_view { t.value.begin(), t.value.length() };
-  }
 
   using compo_map = std::unordered_map<std::string_view, std::string_view>;
   using include_map = std::unordered_map<std::string_view, compo_map>;

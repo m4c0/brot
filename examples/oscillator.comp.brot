@@ -1,13 +1,29 @@
-R1: include(r1k)
-R2: include(R1)
-R3: include(r100k)
-R4: include(R3)
+R1:
+  include(r1k)
+  jlcpcb_bom()
+R2:
+  include(R1)
+  jlcpcb_bom()
+R3:
+  include(r100k)
+  jlcpcb_bom()
+R4:
+  include(R3)
+  jlcpcb_bom()
 
-C1: include(c100u)
-C2: include(C1)
+C1:
+  include(c100u)
+  jlcpcb_bom()
+C2:
+  include(C1)
+  jlcpcb_bom()
 
-Q1: include(npn)
-Q2: include(Q1)
+Q1:
+  include(npn)
+  jlcpcb_bom()
+Q2:
+  include(Q1)
+  jlcpcb_bom()
 
 HDR:
   comment(vcc, ground, q, not q - is there a better way to do this?)
