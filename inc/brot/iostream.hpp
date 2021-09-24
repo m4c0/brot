@@ -22,11 +22,12 @@ namespace brot::iostream {
       return n;
     };
   }
-  static constexpr auto print_name() noexcept {
-    return [](auto n) {
-      std::cout << n << ":";
-      return n;
-    };
+
+  static constexpr auto print_name(auto n) noexcept {
+    std::cout << n << ":";
+  }
+  static constexpr auto print_param(auto n, auto v) noexcept {
+    std::cout << n << "(" << v << ")";
   }
 }
 

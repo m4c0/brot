@@ -28,7 +28,7 @@ namespace brot::parser::impl {
   static constexpr const auto name = tokenise<token_ids::name>(name_chars);
   static constexpr const auto value = tokenise<token_ids::value>(value_chars);
 
-  static constexpr const auto eof = m4c0::parser::eof() | "Invalid component start";
+  static constexpr const auto eof = m4c0::parser::eof() | "Invalid component";
 
   template<typename P>
   requires is_parser<P>

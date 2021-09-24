@@ -7,23 +7,81 @@
 namespace brot::tools::expand {
   using namespace brot::parser;
 
+  template<typename T>
+  static constexpr auto to_sv(m4c0::parser::token<T> t) noexcept {
+    return std::string_view { t.value.begin(), t.value.length() };
+  }
+
+  using compo_map = std::unordered_map<std::string_view, std::string_view>;
+  using include_map = std::unordered_map<std::string_view, compo_map>;
+
+  struct param_fn {
+    tokens::name name;
+    bool is_include;
+  };
+  static constexpr auto to_param_fn(bool is_inc) noexcept {
+    return [is_inc](tokens::name n) noexcept {
+      return param_fn { n, is_inc };
+    };
+  }
+
+  struct param_pair : public param_fn {
+    tokens::value value;
+  };
+  static constexpr auto operator+(param_fn fn, tokens::value v) noexcept {
+    return param_pair { fn, v };
+  }
+
+  struct compo_builder {
+    std::string_view name;
+    include_map * map;
+  };
+  static compo_builder operator+(compo_builder c, param_pair var) {
+    auto & params = (*c.map)[c.name];
+    if (var.is_include) {
+      for (auto & kv : c.map->at(to_sv(var.value))) {
+        params.insert_or_assign(kv.first, kv.second);
+      }
+    } else {
+      params.insert_or_assign(to_sv(var.name), to_sv(var.value));
+    }
+    return c;
+  }
+
+  struct file_builder {};
+  static file_builder operator+(file_builder /*f*/, compo_builder c) {
+    iostream::print_name(c.name);
+    for (auto & kv : c.map->at(c.name)) {
+      iostream::print_param(kv.first, kv.second);
+    }
+    return {};
+  }
+
   static constexpr const auto cname = compo_name(name);
 
-  static constexpr const auto include_name = m4c0::parser::match("include");
-  static constexpr const auto include_param = parameter(skip(include_name), skip(value));
+  static constexpr const auto include_token = tokenise<token_ids::name>(m4c0::parser::match("include"));
+  static constexpr const auto include_name = include_token & to_param_fn(true);
+  static constexpr const auto other_name = name & to_param_fn(false);
+  static constexpr const auto param_name = include_name | other_name;
 
-  static constexpr const auto other_param = parameter(skip(name), skip(value));
+  static constexpr const auto param = parameter(param_name, value);
 
-  static constexpr const auto param = skip(include_param) | skip(other_param);
-
-  static constexpr const auto init = constant(m4c0::parser::nil {});
-  static constexpr const auto compo = component(cname, skip(param));
-  static constexpr const auto parser = tokenise<void>(file(init, skip(compo))) & iostream::print();
+  static constexpr const auto init = m4c0::parser::constant(file_builder {});
 
   static auto run() {
-    std::unordered_map<std::string_view, std::string_view> specs {};
+    std::unordered_map<std::string_view, compo_map> specs {};
 
-    return iostream::parse_cin(parser);
+    const auto cnb = cname & [&specs](tokens::name name) {
+      const auto sv = to_sv(name);
+      return compo_builder { sv, &specs };
+    };
+
+    const auto valid_param = param && [&specs](param_pair pair) -> bool {
+      return !pair.is_include || specs.contains(to_sv(pair.value));
+    };
+    const auto compo = component(cnb, valid_param);
+
+    return iostream::parse_cin(file(init, compo));
   }
 }
 
