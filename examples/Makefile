@@ -3,6 +3,9 @@
 oscillator.jlcpcb.bom: oscillator.brot
 	cat $? | ../build/brot-jlcpcb-bom > $@
 
+oscillator.jlcpcb.pnp: oscillator.brot
+	cat $? | ../build/brot-jlcpcb-pnp > $@
+
 oscillator.brot: oscillator.bom.brot oscillator.comp.brot oscillator.net.brot
 	cat $? | ../build/brot-expand | ../build/brot-cat > $@
 

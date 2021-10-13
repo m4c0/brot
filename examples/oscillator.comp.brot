@@ -1,34 +1,74 @@
 R1:
   include(r1k)
   jlcpcb_bom()
+  pcb_x(137.8mil)
+  pcb_y(551.2mil)
+  pcb_layer(top)
+  pcb_rotation(0)
+
 R2:
   include(R1)
   jlcpcb_bom()
+  pcb_x(137.8mil)
+  pcb_y(236.2mil)
+  pcb_layer(top)
+  pcb_rotation(180)
+
 R3:
   include(r100k)
   jlcpcb_bom()
+  pcb_x(137.8mil)
+  pcb_y(472.4mil)
+  pcb_layer(top)
+  pcb_rotation(180)
+
 R4:
   include(R3)
   jlcpcb_bom()
+  pcb_x(137.8mil)
+  pcb_y(315.0mil)
+  pcb_layer(top)
+  pcb_rotation(180)
+
 
 C1:
   include(c100u)
   jlcpcb_bom()
+  pcb_x(275.6mil)
+  pcb_y(511.8mil)
+  pcb_layer(top)
+  pcb_rotation(270)
+
 C2:
   include(C1)
   jlcpcb_bom()
+  pcb_x(275.6mil)
+  pcb_y(275.6mil)
+  pcb_layer(top)
+  pcb_rotation(90)
 
 Q1:
   include(npn)
   jlcpcb_bom()
+  pcb_x(137.8mil)
+  pcb_y(236.2mil)
+  pcb_layer(top)
+  pcb_rotation(270)
+
 Q2:
   include(Q1)
   jlcpcb_bom()
+  pcb_x(137.8mil)
+  pcb_y(236.2mil)
+  pcb_layer(top)
+  pcb_rotation(90)
 
 HDR:
   comment(vcc, ground, q, not q - is there a better way to do this?)
   header(4)
   spacing(100mil)
+  header_x(75mil)
+  header_y(75mil)
 
 VCC:
   net(R1.0 R2.0 R3.0 R4.0 HDR.0)

@@ -7,14 +7,17 @@ add_library(brot-parser INTERFACE)
 target_compile_features(brot-parser INTERFACE cxx_std_20)
 target_compile_options(brot-parser INTERFACE -fno-exceptions -fno-rtti)
 target_include_directories(brot-parser INTERFACE inc)
-target_include_directories(brot-parser INTERFACE ext/m4c0-stl/parser/inc)
+target_include_directories(brot-parser INTERFACE
+  ext/m4c0-stl/units/inc
+  ext/m4c0-stl/parser/inc
+  )
 
-add_executable(brot-cat src/cat.cpp)
-target_link_libraries(brot-cat PUBLIC brot-parser)
+function(brot_tool NAME)
+  add_executable(brot-${NAME} src/${NAME}.cpp)
+  target_link_libraries(brot-${NAME} PUBLIC brot-parser)
+endfunction()
 
-add_executable(brot-expand src/expand.cpp)
-target_link_libraries(brot-expand PUBLIC brot-parser)
-
-add_executable(brot-jlcpcb-bom src/jlcpcb-bom.cpp)
-target_link_libraries(brot-jlcpcb-bom PUBLIC brot-parser)
-
+brot_tool(cat)
+brot_tool(expand)
+brot_tool(jlcpcb-bom)
+brot_tool(jlcpcb-pnp)
