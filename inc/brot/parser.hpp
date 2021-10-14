@@ -61,6 +61,6 @@ namespace brot::parser {
   template<typename P0, typename PC>
   requires impl::is_parser<P0> && impl::is_parser<PC>
   static constexpr auto file(P0 && init_p, PC && compo_p) noexcept {
-    return init_p + impl::spaces + compo_p << compo_p & impl::eof;
+    return (init_p + impl::spaces + compo_p << compo_p) + impl::eof;
   }
 }
