@@ -46,10 +46,20 @@ namespace brot::parser {
   static constexpr auto compo_name(P && name_p) noexcept {
     return impl::parse_or_fail(name_p + impl::colon + impl::spaces, "Invalid component name");
   }
+  template<typename PV>
+  requires impl::is_parser<PV>
+  static constexpr auto parameter(impl::input_t name, PV && value_p) noexcept {
+    return impl::parse_or_fail(
+        impl::match(name) & impl::lparen & value_p + impl::rparen + impl::spaces,
+        "Invalid parameter");
+  }
   template<typename PN, typename PV>
   requires impl::is_parser<PN> && impl::is_parser<PV>
   static constexpr auto parameter(PN && name_p, PV && value_p) noexcept {
     return impl::parse_or_fail(name_p + impl::lparen + value_p + impl::rparen + impl::spaces, "Invalid parameter");
+  }
+  static constexpr auto parameter() noexcept {
+    return parameter(skip(name), skip(value));
   }
 
   template<typename PN, typename PV>

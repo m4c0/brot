@@ -19,5 +19,7 @@ endfunction()
 
 brot_tool(cat)
 brot_tool(expand)
+brot_tool(gerber-drill)
 brot_tool(jlcpcb-bom)
 brot_tool(jlcpcb-pnp)
+

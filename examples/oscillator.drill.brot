@@ -1,0 +1,25 @@
+HDR.0:
+  pcb_drill(35mil)
+  pcb_x(75mil)
+  pcb_y(75mil)
+
+HDR.1:
+  pcb_drill(35mil)
+  pcb_x(175mil)
+  pcb_y(75mil)
+
+HDR.2:
+  pcb_drill(35mil)
+  pcb_x(275mil)
+  pcb_y(75mil)
+
+HDR.3:
+  pcb_drill(35mil)
+  pcb_x(375mil)
+  pcb_y(75mil)
+
+C1_1.0:
+  pcb_drill(12mil)
+  pcb_x(346mil)
+  pcb_y(433mil)
+
