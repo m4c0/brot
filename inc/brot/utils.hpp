@@ -1,6 +1,7 @@
 #pragma once
 
 #include "brot/parser.hpp"
+#include "m4c0/parser/conversions.hpp"
 #include "m4c0/parser/tokeniser.hpp"
 
 #include <string_view>
@@ -11,12 +12,9 @@ namespace brot {
   static constexpr auto to_sv(m4c0::parser::token<T> t) noexcept {
     return std::string_view { t.value.begin(), t.value.length() };
   }
-
   template<typename T>
-  static constexpr auto to() {
-    return [](auto val) noexcept -> T {
-      return T { val };
-    };
+  static constexpr auto to() noexcept {
+    return m4c0::parser::to<T>();
   }
 
   class param_pair {
