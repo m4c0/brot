@@ -4,16 +4,28 @@
 #include "brot/parser.hpp"
 #include "brot/utils.hpp"
 
+#include <string_view>
 #include <type_traits>
 
 namespace brot::composer {
+  class compo {
+    std::string_view m_designator;
+
+  public:
+    explicit constexpr compo(parser::tokens::name n) noexcept : m_designator(to_sv(n)) {
+    }
+
+    [[nodiscard]] constexpr auto designator() const noexcept {
+      return m_designator;
+    }
+  };
+
   template<typename T>
   concept basic_type = requires(T t) {
     T(std::declval<parser::tokens::name>());
     { t + std::declval<param_pair>() };
     { std::declval<std::ostream>() << t };
   };
-
   template<typename T>
   requires basic_type<T>
   class basic {

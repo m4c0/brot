@@ -1,8 +1,7 @@
 #include "brot/composer.hpp"
 
 namespace brot::tools::jlcpcb {
-  class bom {
-    std::string_view m_designator;
+  class bom : composer::compo {
     std::string_view m_comment {};
     std::string_view m_footprint {};
     std::string_view m_part_no {};
@@ -11,8 +10,7 @@ namespace brot::tools::jlcpcb {
     friend std::ostream & operator<<(std::ostream & o, const bom & e);
 
   public:
-    explicit constexpr bom(parser::tokens::name n) noexcept : m_designator(to_sv(n)) {
-    }
+    using compo::compo;
 
     constexpr auto operator+(param_pair p) const noexcept {
       auto res = *this;
@@ -31,7 +29,7 @@ namespace brot::tools::jlcpcb {
 
   std::ostream & operator<<(std::ostream & o, const bom & e) {
     if (!e.m_valid) return o;
-    return o << e.m_designator << ", " << e.m_comment << ", " << e.m_footprint << ", " << e.m_part_no << "\n";
+    return o << e.designator() << ", " << e.m_comment << ", " << e.m_footprint << ", " << e.m_part_no << "\n";
   }
 }
 
